@@ -20,11 +20,31 @@ data = {
 }
 headers = {'Content-Type': 'application/json'}
 
+# 打印配置信息
+print("配置信息：")
+print(f"账号: {account}")
+print(f"密码: {password}")
+print(f"学校ID: {school_id}")
+print(f"经度: {longitude}")
+print(f"纬度: {latitude}")
+print(f"签到地址: {data['address_name']}")
+
 response = requests.post(url='https://service-nm4jylpg-1251957121.gz.apigw.tencentcs.com/release/xixunyun', headers=headers, data=json.dumps(data))
-print(response.json()["data"])
+
+# 检查响应状态码
+print(f"响应状态码: {response.status_code}")
+
+# 打印响应内容
+print("响应内容：")
+try:
+    response_json = response.json()
+    print(json.dumps(response_json, ensure_ascii=False, indent=4))  # 格式化打印JSON
+    print(response_json["data"])
+except json.JSONDecodeError:
+    print("响应内容不是有效的JSON格式")
+    print(response.text)  # 打印原始响应文本
 
 SCKEY=os.environ["SCKEY"]
 if len(SCKEY) >= 1:
   url = 'https://sctapi.ftqq.com/'+SCKEY+'.send'
   requests.post(url, data={"title": "习讯云签到提醒", "desp": response.json()["data"]})
-
